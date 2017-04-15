@@ -10,7 +10,7 @@ Param (
 
 function ReplaceInFiles($filter, $pattern, $replace)
 {
-	$files = Get-ChildItem -filter $filter -exclude scaffold.ps1 -exclude .git -recurse | 
+	$files = Get-ChildItem -filter $filter -exclude scaffold.ps1 -recurse | 
 		Where { ($_.FullName -inotmatch ("^$root\packages" -replace "\\","\\") `
 			-and !$_.PSIsContainer `
 			-and ($_.extension -ne ".dll") `
@@ -21,8 +21,24 @@ function ReplaceInFiles($filter, $pattern, $replace)
 	foreach($file in $files) 
 	{
 		(Get-Content $file.FullName) -replace $pattern, $replace | Out-File $file.FullName -Encoding ascii
+        $file | Rename-Item -NewName { $_.Name -replace $pattern, $replace }
 	}
+
+    $folders = Get-ChildItem -filter $filter -exclude scaffold.ps1 -recurse | 
+        Where { ($_.FullName -inotmatch ("^$root\packages" -replace "\\","\\") `
+            -and $_.PSIsContainer ) `
+        }
+
+    foreach($folder in $folders)
+    {
+        #(Get-Content $file.FullName) -replace $pattern, $replace | Out-File $file.FullName -Encoding ascii
+        #$folder | Rename-Item -NewName { $_.Name -replace $pattern, $replace }
+    }
+
+    Dir |
+        Where-Object { $_.Name.Contains($pattern) } |
+        Rename-Item -NewName { $_.Name -replace $pattern, $replace }
 }
 
-ReplaceInFiles * "Rename\.Me" $solution
+ReplaceInFiles * "Rename.Me" $solution
 #remove git info from solution by deleting .git folder
