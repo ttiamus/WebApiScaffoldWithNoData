@@ -10,7 +10,7 @@ Param (
 
 function ReplaceInFiles($filter, $pattern, $replace)
 {
-	$files = Get-ChildItem -filter $filter -exclude scaffold.ps1,.git -recurse | 
+	$files = Get-ChildItem -filter $filter -exclude scaffold.ps1 -exclude .git -recurse | 
 		Where { ($_.FullName -inotmatch ("^$root\packages" -replace "\\","\\") `
 			-and !$_.PSIsContainer `
 			-and ($_.extension -ne ".dll") `
