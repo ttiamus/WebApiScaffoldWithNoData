@@ -24,3 +24,4 @@ function ReplaceInFiles($filter, $pattern, $replace)
 }
 
 ReplaceInFiles * "Rename\.Me" $solution
+#remove git info from solution by deleting .git folder
