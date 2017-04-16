@@ -14,6 +14,7 @@ function CopyFiles($destination)
     Get-ChildItem -filter * -exclude scaffold.ps1 -recurse | 
         Where {
             $_.FullName -notlike "*.git\*" `
+			-and $_.FullName -notlike "*\packages\*" `
             -and (!($_.PSIsContainer)) ` 
         } | foreach{
     
@@ -75,6 +76,8 @@ if(!(Test-Path $solutionFolder))
 
     echo "Renaming"
     ReplaceInFiles $solutionFolder "Rename.Me" $solution
+	
+	#may want to delete bin/ obj folders. They are currently copied over
 }
 else
 {
